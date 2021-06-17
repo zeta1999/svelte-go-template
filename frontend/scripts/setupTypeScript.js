@@ -22,17 +22,17 @@ const projectRoot = argv[2] || path.join(__dirname, "..")
 // Add deps to pkg.json
 const packageJSON = JSON.parse(fs.readFileSync(path.join(projectRoot, "package.json"), "utf8"))
 packageJSON.devDependencies = Object.assign(packageJSON.devDependencies, {
-  "svelte-check": "^2.0.0",
+  "svelte-check": "^1.0.0",
   "svelte-preprocess": "^4.0.0",
-  "@rollup/plugin-typescript": "^8.0.0",
-  "typescript": "^4.0.0",
+  "@rollup/plugin-typescript": "^6.0.0",
+  "typescript": "^3.9.3",
   "tslib": "^2.0.0",
-  "@tsconfig/svelte": "^2.0.0"
+  "@tsconfig/svelte": "^1.0.0"
 })
 
 // Add script for checking
 packageJSON.scripts = Object.assign(packageJSON.scripts, {
-  "check": "svelte-check --tsconfig ./tsconfig.json"
+  "validate": "svelte-check"
 })
 
 // Write the package JSON
@@ -65,7 +65,7 @@ rollupConfig = rollupConfig.replace(`'src/main.js'`, `'src/main.ts'`)
 // Add preprocessor
 rollupConfig = rollupConfig.replace(
   'compilerOptions:',
-  'preprocess: sveltePreprocess({ sourceMap: !production }),\n\t\t\tcompilerOptions:'
+  'preprocess: sveltePreprocess(),\n\t\t\tcompilerOptions:'
 );
 
 // Add TypeScript
@@ -84,10 +84,6 @@ const tsconfig = `{
 }`
 const tsconfigPath =  path.join(projectRoot, "tsconfig.json")
 fs.writeFileSync(tsconfigPath, tsconfig)
-
-// Add global.d.ts
-const dtsPath =  path.join(projectRoot, "src", "global.d.ts")
-fs.writeFileSync(dtsPath, `/// <reference types="svelte" />`)
 
 // Delete this script, but not during testing
 if (!argv[2]) {
@@ -108,7 +104,7 @@ if (!argv[2]) {
 }
 
 // Adds the extension recommendation
-fs.mkdirSync(path.join(projectRoot, ".vscode"), { recursive: true })
+fs.mkdirSync(path.join(projectRoot, ".vscode"))
 fs.writeFileSync(path.join(projectRoot, ".vscode", "extensions.json"), `{
   "recommendations": ["svelte.svelte-vscode"]
 }
