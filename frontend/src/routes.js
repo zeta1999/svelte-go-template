@@ -1,10 +1,10 @@
 import Home from './routes/Home.svelte';
-import Lorem from './routes/Lorem.svelte';
+import Auth from './routes/Auth.svelte';
 import Nf from './routes/Nf.svelte';
 
 export default {
     '/': Home,
-    '/lorem/:repeat': Lorem,
+    '/auth/:jwt': Auth,
     // The catch-all route must always be last
     '*': Nf
 };
